@@ -1,0 +1,305 @@
+@import "tailwindcss";
+
+/* ── Tokyo Night, переработанная под интерфейс ──────────────────────────────
+   Базовая палитра оставлена узнаваемой, но поверхности разведены по глубине,
+   чтобы сетка держалась на слоях, а не на жирных рамках.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-night-1000: #101119;
+  --color-night-950: #14151f;
+  --color-night-900: #171825;
+  --color-night-850: #1a1b26;
+  --color-night-800: #1e2030;
+  --color-night-750: #232538;
+  --color-night-700: #292e42;
+  --color-night-650: #333853;
+  --color-night-600: #3b4261;
+  --color-night-500: #545c7e;
+  --color-night-450: #565f89;
+  --color-night-400: #6b74a0;
+  --color-night-300: #8b93bd;
+  --color-night-200: #a9b1d6;
+  --color-night-100: #c0caf5;
+  --color-night-50: #dfe6ff;
+
+  --color-brand: #7aa2f7;
+  --color-brand-soft: #3d59a1;
+  --color-cyan: #7dcfff;
+  --color-teal: #73daca;
+  --color-green: #9ece6a;
+  --color-yellow: #e0af68;
+  --color-orange: #ff9e64;
+  --color-red: #f7768e;
+  --color-magenta: #bb9af7;
+  --color-purple: #9d7cd8;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  --radius-card: 0.75rem;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-pop: 0 24px 64px -24px rgb(0 0 0 / 0.75), 0 2px 8px rgb(0 0 0 / 0.4);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --surface: var(--color-night-850);
+    --surface-raised: var(--color-night-800);
+    --hairline: color-mix(in oklab, var(--color-night-700) 70%, transparent);
+  }
+
+  * {
+    border-color: var(--hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(
+        1200px 620px at 12% -8%,
+        color-mix(in oklab, var(--color-brand) 9%, transparent),
+        transparent 62%
+      ),
+      radial-gradient(
+        900px 520px at 96% 4%,
+        color-mix(in oklab, var(--color-magenta) 7%, transparent),
+        transparent 58%
+      ),
+      var(--color-night-1000);
+    background-attachment: fixed;
+    color: var(--color-night-100);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv05" 1, "ss03" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand) 35%, transparent);
+    color: var(--color-night-50);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Аккуратный скроллбар — стандартный слишком грубый для тёмной сетки */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-night-650) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-night-650);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 99px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-night-600);
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  /* Панель: базовая поверхность интерфейса */
+  .panel {
+    background: color-mix(in oklab, var(--surface) 88%, transparent);
+    border: 1px solid var(--hairline);
+    border-radius: 1rem;
+    backdrop-filter: blur(12px);
+  }
+
+  /* Оттенок предмета. Цвет приходит через --subject, поэтому одна
+     утилита обслуживает любое количество предметов. */
+  .subject-tint {
+    --tint: color-mix(in oklab, var(--subject) 14%, var(--color-night-800));
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--subject) 17%, var(--color-night-800)),
+      var(--tint)
+    );
+    border: 1px solid color-mix(in oklab, var(--subject) 26%, transparent);
+    box-shadow: inset 3px 0 0 0 var(--subject);
+  }
+  .subject-tint:hover {
+    border-color: color-mix(in oklab, var(--subject) 44%, transparent);
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--subject) 24%, var(--color-night-800)),
+      color-mix(in oklab, var(--subject) 18%, var(--color-night-800))
+    );
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.01em;
+  }
+
+  .hairline-grid {
+    background-image: linear-gradient(var(--hairline) 1px, transparent 1px);
+  }
+}
+
+@layer utilities {
+  .animate-in-up {
+    animation: in-up 0.22s var(--ease-out-quint) both;
+  }
+  .animate-in-fade {
+    animation: in-fade 0.18s ease-out both;
+  }
+  .animate-in-pop {
+    animation: in-pop 0.24s var(--ease-out-quint) both;
+  }
+  .print-only {
+    display: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+@keyframes in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes in-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes in-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Печать ────────────────────────────────────────────────────────────────
+   На бумаге тёмная тема нечитаема и съедает картридж: переключаемся
+   на светлую сетку и убираем всю интерфейсную обвязку.
+--------------------------------------------------------------------------- */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .panel,
+  .subject-tint {
+    background: #fff !important;
+    border: 1px solid #c8ccd8 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border-radius: 4px !important;
+  }
+
+  .subject-tint {
+    box-shadow: inset 3px 0 0 0 var(--subject) !important;
+  }
+
+  .print-grid {
+    display: grid !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* На бумаге место есть — длинные названия переносим, а не обрезаем. */
+  [data-print-text] {
+    color: #111 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  [data-print-muted] {
+    color: #555 !important;
+  }
+
+  .print-break-avoid {
+    break-inside: avoid;
+  }
+
+  /* Липкие поверхности сетки — рельс, шапка, итоги: на бумаге они белые. */
+  [data-print-surface] {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    border-color: #c8ccd8 !important;
+  }
+
+  [data-print-surface] * {
+    color: #333 !important;
+  }
+
+  /* На экране сетка тянется и скроллится, на листе — ужимается под ширину. */
+  .print-fit {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .print-grid {
+    --cell-min: 0px !important;
+    --rail: 58px !important;
+  }
+}
