@@ -50,6 +50,11 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- PostgREST выставляет функции public наружу, а эта — security definer.
+-- Триггер выполняется от владельца и прав роли не спрашивает, так что
+-- снаружи её вызывать незачем. Находка линтера Supabase.
+revoke execute on function public.handle_new_user() from anon, authenticated, public;
+
 -- ── Звонки ─────────────────────────────────────────────────────────────────
 
 create table if not exists public.bells (
@@ -195,13 +200,13 @@ drop policy if exists bells_update_own on public.bells;
 drop policy if exists bells_delete_own on public.bells;
 
 create policy bells_select_own on public.bells
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy bells_insert_own on public.bells
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 create policy bells_update_own on public.bells
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy bells_delete_own on public.bells
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists subjects_select_own on public.subjects;
 drop policy if exists subjects_insert_own on public.subjects;
@@ -209,13 +214,13 @@ drop policy if exists subjects_update_own on public.subjects;
 drop policy if exists subjects_delete_own on public.subjects;
 
 create policy subjects_select_own on public.subjects
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy subjects_insert_own on public.subjects
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 create policy subjects_update_own on public.subjects
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy subjects_delete_own on public.subjects
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists template_lessons_select_own on public.template_lessons;
 drop policy if exists template_lessons_insert_own on public.template_lessons;
@@ -223,13 +228,13 @@ drop policy if exists template_lessons_update_own on public.template_lessons;
 drop policy if exists template_lessons_delete_own on public.template_lessons;
 
 create policy template_lessons_select_own on public.template_lessons
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy template_lessons_insert_own on public.template_lessons
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 create policy template_lessons_update_own on public.template_lessons
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy template_lessons_delete_own on public.template_lessons
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists lesson_overrides_select_own on public.lesson_overrides;
 drop policy if exists lesson_overrides_insert_own on public.lesson_overrides;
@@ -237,13 +242,13 @@ drop policy if exists lesson_overrides_update_own on public.lesson_overrides;
 drop policy if exists lesson_overrides_delete_own on public.lesson_overrides;
 
 create policy lesson_overrides_select_own on public.lesson_overrides
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy lesson_overrides_insert_own on public.lesson_overrides
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 create policy lesson_overrides_update_own on public.lesson_overrides
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy lesson_overrides_delete_own on public.lesson_overrides
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists day_marks_select_own on public.day_marks;
 drop policy if exists day_marks_insert_own on public.day_marks;
@@ -251,36 +256,36 @@ drop policy if exists day_marks_update_own on public.day_marks;
 drop policy if exists day_marks_delete_own on public.day_marks;
 
 create policy day_marks_select_own on public.day_marks
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy day_marks_insert_own on public.day_marks
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 create policy day_marks_update_own on public.day_marks
-  for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+  for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy day_marks_delete_own on public.day_marks
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists profiles_select_own on public.profiles;
 drop policy if exists profiles_update_own on public.profiles;
 create policy profiles_select_own on public.profiles
-  for select using (auth.uid() = id);
+  for select using ((select auth.uid()) = id);
 create policy profiles_update_own on public.profiles
-  for update using (auth.uid() = id) with check (auth.uid() = id);
+  for update using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
 -- Привязку Telegram пользователь видит и может отвязать. Создаёт её бот.
 drop policy if exists telegram_links_select_own on public.telegram_links;
 drop policy if exists telegram_links_delete_own on public.telegram_links;
 create policy telegram_links_select_own on public.telegram_links
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy telegram_links_delete_own on public.telegram_links
-  for delete using (auth.uid() = user_id);
+  for delete using ((select auth.uid()) = user_id);
 
 -- Код привязки пользователь заводит себе сам и читает только свой.
 drop policy if exists link_codes_select_own on public.telegram_link_codes;
 drop policy if exists link_codes_insert_own on public.telegram_link_codes;
 create policy link_codes_select_own on public.telegram_link_codes
-  for select using (auth.uid() = user_id);
+  for select using ((select auth.uid()) = user_id);
 create policy link_codes_insert_own on public.telegram_link_codes
-  for insert with check (auth.uid() = user_id);
+  for insert with check ((select auth.uid()) = user_id);
 
 -- reminder_log пишет только cron под service_role: политик для клиента нет,
 -- поэтому из браузера таблица недоступна вовсе.
@@ -434,6 +439,21 @@ $$;
 -- выдача не мешает и спасает проекты с изменёнными default privileges.
 -- Данные всё равно закрыты политиками RLS выше — grant без политики ничего не даёт.
 grant usage on schema public to anon, authenticated, service_role;
+
+-- Неавторизованному клиенту эти таблицы не нужны вовсе. RLS его и так
+-- отсекает, но полагаться на один слой не стоит: без привилегии анонимный
+-- запрос падает раньше, на проверке прав.
+revoke all on
+  public.profiles,
+  public.bells,
+  public.subjects,
+  public.template_lessons,
+  public.lesson_overrides,
+  public.day_marks,
+  public.telegram_links,
+  public.telegram_link_codes,
+  public.reminder_log
+from anon;
 
 grant select, insert, update, delete on
   public.bells,
