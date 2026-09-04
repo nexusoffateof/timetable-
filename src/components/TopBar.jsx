@@ -60,18 +60,20 @@ export default function TopBar({
 
           {view !== 'template' && (
             <div className="flex items-center gap-1">
+              {/* Метки по смыслу, а не «Назад/Вперёд»: на странице есть другие
+                  кнопки возврата, и для скринридера это была путаница. */}
               <Button
                 variant="ghost"
                 size="icon"
                 icon="chevronLeft"
-                aria-label="Назад"
+                aria-label={view === 'day' ? 'Предыдущий день' : 'Предыдущая неделя'}
                 onClick={() => onStep(-1)}
               />
               <Button
                 variant="ghost"
                 size="icon"
                 icon="chevronRight"
-                aria-label="Вперёд"
+                aria-label={view === 'day' ? 'Следующий день' : 'Следующая неделя'}
                 onClick={() => onStep(1)}
               />
               <span className="ml-1 min-w-0 truncate text-[13.5px] font-medium text-night-100">

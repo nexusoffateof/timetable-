@@ -23,6 +23,7 @@ import ConfirmDialog from './components/ui/ConfirmDialog.jsx'
 import Toasts from './components/ui/Toasts.jsx'
 import PrintHeader from './components/PrintHeader.jsx'
 import EmptyState from './components/EmptyState.jsx'
+import ChatWidget from './components/chat/ChatWidget.jsx'
 
 export default function App() {
   const { state, dispatch, dispatchWithUndo, undo, redo, canUndo } = useSchedule()
@@ -600,6 +601,8 @@ export default function App() {
       />
 
       <Toasts />
+
+      <ChatWidget />
     </div>
   )
 }
