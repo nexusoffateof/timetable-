@@ -65,16 +65,34 @@ export default function LessonCard({
 
         <span className="flex shrink-0 items-center gap-1 pt-px">
           {lesson.note && (
-            <Icon name="note" size={12} className="text-night-300/80" aria-label="есть заметка" />
+            <span title="Личная заметка к уроку" aria-label="есть заметка">
+              <Icon name="note" size={12} className="text-night-300/80" />
+            </span>
           )}
           {lesson.timeShifted && (
-            <Icon name="clock" size={12} className="text-orange" aria-label="время изменено" />
+            <span
+              title={`Время сдвинуто на этот день: ${lesson.start}–${lesson.end} вместо звонка`}
+              aria-label="время изменено"
+            >
+              <Icon name="clock" size={12} className="text-orange" />
+            </span>
           )}
-          {cancelled && <Icon name="ban" size={12} className="text-red" aria-label="отменён" />}
+          {cancelled && (
+            <span title="Урок отменён в этот день" aria-label="отменён">
+              <Icon name="ban" size={12} className="text-red" />
+            </span>
+          )}
+          {/* Оранжевая точка = «в этот день не как обычно». Формулировка
+              развёрнутая: короткое «изменён» читателю ничего не говорило. */}
           {!cancelled && source === 'override' && (
             <span
               className="h-1.5 w-1.5 rounded-full bg-orange"
-              title={lesson.addedOnDate ? 'Добавлен на эту дату' : 'Изменён на эту дату'}
+              aria-label="отличается от постоянного расписания"
+              title={
+                lesson.addedOnDate
+                  ? 'Разовый урок: в постоянном расписании его нет, он стоит только в этот день'
+                  : 'Замена: в этот день урок отличается от постоянного расписания'
+              }
             />
           )}
         </span>

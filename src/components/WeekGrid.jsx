@@ -26,13 +26,29 @@ export default function WeekGrid({
   const columns = `var(--rail) repeat(${days.length}, minmax(var(--cell-min), 1fr))`
   const isTodayVisible = days.some((d) => d.date === today)
 
+  /**
+   * Компактный режим — это не «чуть уже», а обещание уместить весь день
+   * на экране. Поэтому строки не задаются минимальной высотой, а делят
+   * доступную высоту поровну: сколько бы ни было звонков, прокрутки нет.
+   */
+  const rows = compact
+    ? `auto repeat(${bells.length}, minmax(0, 1fr)) auto`
+    : undefined
+
   return (
     <div
       className="panel group/grid overflow-hidden"
       style={{ '--rail': '78px', '--cell-min': compact ? '124px' : '158px' }}
     >
-      <div className="print-grid max-h-[calc(100dvh-13.5rem)] overflow-auto">
-        <div className="print-fit grid min-w-max" style={{ gridTemplateColumns: columns }}>
+      <div
+        className={`print-grid overflow-auto ${
+          compact ? 'h-[calc(100dvh-8rem)]' : 'max-h-[calc(100dvh-13.5rem)]'
+        }`}
+      >
+        <div
+          className={`print-fit grid min-w-max ${compact ? 'h-full' : ''}`}
+          style={{ gridTemplateColumns: columns, gridTemplateRows: rows }}
+        >
           {/* Угол */}
           <div
             data-print-surface
@@ -169,8 +185,8 @@ function BellRow({
         return (
           <div
             key={`${bell.id}-${day.date}`}
-            className={`relative border-l border-t border-night-700/35 p-1 transition-colors ${
-              compact ? 'min-h-[62px]' : 'min-h-[78px]'
+            className={`relative overflow-hidden border-l border-t border-night-700/35 p-1 transition-colors ${
+              compact ? 'min-h-0' : 'min-h-[78px]'
             } ${isToday ? 'bg-brand/6' : ''} ${live && isToday ? 'bg-brand/10' : ''}`}
           >
             {off ? (

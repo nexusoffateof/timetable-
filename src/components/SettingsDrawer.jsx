@@ -31,6 +31,7 @@ const TABS = [
   { id: 'calendar', label: 'Каникулы', icon: 'palm' },
   { id: 'reminders', label: 'Напоминания', icon: 'send' },
   { id: 'data', label: 'Данные', icon: 'download' },
+  { id: 'help', label: 'Справка', icon: 'note' },
 ]
 
 export default function SettingsDrawer({ open, onClose, state, dispatch, toast }) {
@@ -70,7 +71,9 @@ export default function SettingsDrawer({ open, onClose, state, dispatch, toast }
           <Button variant="ghost" size="icon" icon="x" aria-label="Закрыть" onClick={onClose} />
         </header>
 
-        <nav className="no-scrollbar flex gap-1 overflow-x-auto border-b border-night-700/60 px-3 py-2">
+        {/* Перенос, а не горизонтальный скролл: скрытый скроллбар выглядел
+            как обрезанная вкладка — последняя просто исчезала за краем. */}
+        <nav className="flex flex-wrap gap-1 border-b border-night-700/60 px-3 py-2">
           {TABS.map((item) => (
             <button
               key={item.id}
@@ -99,6 +102,7 @@ export default function SettingsDrawer({ open, onClose, state, dispatch, toast }
           {tab === 'data' && (
             <DataTab state={state} dispatch={dispatch} setConfirm={setConfirm} toast={toast} />
           )}
+          {tab === 'help' && <HelpTab />}
         </div>
       </aside>
 
@@ -744,6 +748,113 @@ function DataTab({ state, dispatch, setConfirm, toast }) {
           </Button>
         </div>
       </div>
+    </div>
+  )
+}
+
+/* ── Справка ───────────────────────────────────────────────────────────── */
+
+const STEPS = [
+  [
+    'Проверьте звонки',
+    'Вкладка «Звонки». Расписание строится вокруг них: уроки встают в эти интервалы. Пока времена не ваши, всё остальное настраивать рано.',
+  ],
+  [
+    'Заведите предметы',
+    'Вкладка «Предметы» или кнопка «+» прямо в форме урока. Цвет предмета — это то, по чему вы будете читать сетку взглядом, поэтому берите разные.',
+  ],
+  [
+    'Заполните постоянное расписание',
+    'Режим «Шаблон» в шапке. Здесь лежит то, что повторяется каждую неделю: «по средам вторым уроком алгебра в 9В». Тем уроков тут нет — они привязаны к датам.',
+  ],
+  [
+    'Работайте в режиме «Неделя»',
+    'Это основной экран. Клик по уроку открывает форму: тема, класс, кабинет, заметка. Переключатель «Куда сохранить» решает главное — правка идёт на один день или во все недели сразу.',
+  ],
+  [
+    'Отмечайте каникулы и праздники',
+    'Вкладка «Каникулы», можно диапазоном. В отмеченные дни уроки из постоянного расписания не показываются, и напоминания по ним не придут.',
+  ],
+  [
+    'Печатайте и выгружайте',
+    'Кнопка печати даёт светлую версию на A4, личные заметки на бумагу не идут. Экспорт — таблица CSV для Excel, файл .ics для календаря телефона и резервная копия JSON.',
+  ],
+]
+
+const LEGEND = [
+  ['dot-orange', 'Оранжевая точка', 'В этот день урок не такой, как в постоянном расписании: замена или разовое занятие.'],
+  ['clock', 'Часы', 'Время урока сдвинуто именно на эту дату.'],
+  ['note', 'Листок', 'К уроку есть личная заметка. В печать она не попадает.'],
+  ['ban', 'Перечёркнутый круг', 'Урок отменён в этот день. В расписании он остаётся.'],
+]
+
+function HelpTab() {
+  return (
+    <div className="space-y-6">
+      <section>
+        <h3 className="mb-3 text-[13px] font-semibold text-night-50">С чего начать</h3>
+        <ol className="space-y-3">
+          {STEPS.map(([title, body], index) => (
+            <li key={title} className="flex gap-3">
+              <span className="num mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-night-800 text-[12px] font-semibold text-brand">
+                {index + 1}
+              </span>
+              <div className="min-w-0">
+                <div className="text-[13px] font-medium text-night-100">{title}</div>
+                <p className="mt-0.5 text-[12.5px] leading-relaxed text-night-400">{body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section>
+        <h3 className="mb-3 text-[13px] font-semibold text-night-50">Значки на уроке</h3>
+        <dl className="space-y-2.5 rounded-xl border border-night-700/60 bg-night-900/40 p-4">
+          {LEGEND.map(([icon, title, body]) => (
+            <div key={title} className="flex gap-3">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
+                {icon === 'dot-orange' ? (
+                  <span className="h-2 w-2 rounded-full bg-orange" />
+                ) : (
+                  <Icon
+                    name={icon}
+                    size={14}
+                    className={icon === 'ban' ? 'text-red' : icon === 'clock' ? 'text-orange' : 'text-night-300'}
+                  />
+                )}
+              </span>
+              <div className="min-w-0">
+                <dt className="text-[12.5px] font-medium text-night-100">{title}</dt>
+                <dd className="text-[12.5px] leading-relaxed text-night-400">{body}</dd>
+              </div>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-[13px] font-semibold text-night-50">Два уровня расписания</h3>
+        <p className="text-[12.5px] leading-relaxed text-night-400">
+          Постоянное расписание — то, что повторяется каждую неделю. Конкретная дата —
+          то, что реально произошло: замена, отмена, тема урока, сдвинутое время.
+          Они хранятся отдельно, поэтому правка одного дня не ломает расписание,
+          а правка расписания не стирает темы уроков.
+        </p>
+        <p className="mt-2 text-[12.5px] leading-relaxed text-night-400">
+          Если урок в конкретный день помечен оранжевой точкой, а вы хотите вернуть
+          всё как в расписании — откройте урок и нажмите «Вернуть как в постоянном
+          расписании».
+        </p>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-[13px] font-semibold text-night-50">Где лежат данные</h3>
+        <p className="text-[12.5px] leading-relaxed text-night-400">
+          Пока — в этом браузере. Другое устройство их не увидит, очистка истории
+          сотрёт. Делайте резервную копию во вкладке «Данные».
+        </p>
+      </section>
     </div>
   )
 }

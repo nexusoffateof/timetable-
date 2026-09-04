@@ -119,6 +119,14 @@ export function Checkbox({ checked, onChange, label }) {
   )
 }
 
+/**
+ * Переключатель.
+ *
+ * Бегунку нужна явная привязка left: без неё браузер ставит абсолютный
+ * элемент по статической позиции, а у <button> по умолчанию
+ * text-align: center — бегунок уезжал к центру, и сдвиг накладывался
+ * поверх, выбрасывая его за дорожку.
+ */
 export function Switch({ checked, onChange, label, hint }) {
   return (
     <label className="flex cursor-pointer items-start gap-3 py-1.5">
@@ -127,15 +135,13 @@ export function Switch({ checked, onChange, label, hint }) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative mt-0.5 h-5.5 w-9.5 shrink-0 rounded-full border transition-colors duration-200 ${
-          checked
-            ? 'border-brand/60 bg-brand/85'
-            : 'border-night-650 bg-night-750'
+        className={`relative mt-0.5 h-6 w-11 shrink-0 rounded-full border transition-colors duration-200 ${
+          checked ? 'border-brand/60 bg-brand/85' : 'border-night-650 bg-night-750'
         }`}
       >
         <span
-          className={`absolute top-0.5 h-4 w-4 rounded-full bg-night-1000 transition-transform duration-200 ${
-            checked ? 'translate-x-4.5 bg-night-1000' : 'translate-x-0.5 bg-night-400'
+          className={`absolute left-0.5 top-0.5 h-4.5 w-4.5 rounded-full transition-transform duration-200 ${
+            checked ? 'translate-x-5 bg-night-1000' : 'translate-x-0 bg-night-400'
           }`}
         />
       </button>

@@ -25,11 +25,15 @@ export default function DayHeader({ day, isToday, onMenu, compact = false }) {
               isToday ? 'text-brand' : 'text-night-100'
             }`}
           >
-            {WEEKDAYS_SHORT[day.weekday - 1]}
+            {WEEKDAYS_SHORT[day.weekday - 1]},
           </span>
+          {/* Дата светлее подписей второго плана: раньше она сливалась с фоном,
+              хотя это главное, что отличает одну колонку от другой. */}
           <span
-            data-print-muted
-            className={`num text-[12px] ${isToday ? 'text-brand/80' : 'text-night-400'}`}
+            data-print-text
+            className={`num text-[12px] font-medium ${
+              isToday ? 'text-brand' : 'text-night-200'
+            }`}
           >
             {compact ? dateNumber : formatDayMonth(day.date)}
           </span>
