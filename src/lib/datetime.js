@@ -98,21 +98,28 @@ export function isoWeekNumber(iso) {
   return Math.ceil(((d - yearStart) / 86400000 + 1) / 7)
 }
 
+/** Число всегда двузначное: «07 сентября», а не «7 сентября». Так строка
+ *  не меняет ширину при перелистывании и колонки не подпрыгивают. */
 export function formatDayMonth(iso) {
   const d = parseISODate(iso)
-  return `${d.getDate()} ${MONTHS_GENITIVE[d.getMonth()]}`
+  return `${pad(d.getDate())} ${MONTHS_GENITIVE[d.getMonth()]}`
+}
+
+/** Число дня отдельно, тоже с ведущим нулём. */
+export function formatDayNumber(iso) {
+  return pad(parseISODate(iso).getDate())
 }
 
 export function formatFull(iso) {
   const d = parseISODate(iso)
-  return `${WEEKDAYS_FULL[isoWeekday(iso) - 1]}, ${d.getDate()} ${MONTHS_GENITIVE[d.getMonth()]} ${d.getFullYear()}`
+  return `${WEEKDAYS_FULL[isoWeekday(iso) - 1]}, ${pad(d.getDate())} ${MONTHS_GENITIVE[d.getMonth()]} ${d.getFullYear()}`
 }
 
 export function monthName(iso) {
   return MONTHS_NOMINATIVE[parseISODate(iso).getMonth()]
 }
 
-/** «2 – 8 марта 2026», со схлопыванием повторяющегося месяца и года. */
+/** «02 – 08 марта 2026», со схлопыванием повторяющегося месяца и года. */
 export function formatWeekRange(mondayISO, days = 7) {
   const from = parseISODate(mondayISO)
   const to = parseISODate(addDaysISO(mondayISO, days - 1))
@@ -120,10 +127,10 @@ export function formatWeekRange(mondayISO, days = 7) {
   const sameYear = from.getFullYear() === to.getFullYear()
 
   const left = sameMonth && sameYear
-    ? String(from.getDate())
-    : `${from.getDate()} ${MONTHS_GENITIVE[from.getMonth()]}${sameYear ? '' : ` ${from.getFullYear()}`}`
+    ? pad(from.getDate())
+    : `${pad(from.getDate())} ${MONTHS_GENITIVE[from.getMonth()]}${sameYear ? '' : ` ${from.getFullYear()}`}`
 
-  return `${left} – ${to.getDate()} ${MONTHS_GENITIVE[to.getMonth()]} ${to.getFullYear()}`
+  return `${left} – ${pad(to.getDate())} ${MONTHS_GENITIVE[to.getMonth()]} ${to.getFullYear()}`
 }
 
 /** `HH:MM` → минуты от полуночи. */

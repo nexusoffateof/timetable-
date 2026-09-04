@@ -1,4 +1,4 @@
-import { WEEKDAYS_SHORT, formatDayMonth, parseISODate } from '../lib/datetime.js'
+import { WEEKDAYS_SHORT, formatDayMonth, formatDayNumber } from '../lib/datetime.js'
 import { DAY_KINDS } from '../lib/schedule.js'
 import Icon from './ui/Icon.jsx'
 
@@ -7,7 +7,7 @@ const KIND_ICON = { holiday: 'flag', vacation: 'palm', special: 'sparkle' }
 export default function DayHeader({ day, isToday, onMenu, compact = false }) {
   const kind = DAY_KINDS[day.kind]
   const off = kind?.lessons === false
-  const dateNumber = parseISODate(day.date).getDate()
+  const dateNumber = formatDayNumber(day.date)
 
   return (
     <div
