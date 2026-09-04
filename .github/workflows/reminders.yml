@@ -1,0 +1,55 @@
+# Запуск рассылки напоминаний по расписанию.
+#
+# Почему GitHub Actions, а не Vercel Cron: на бесплатном тарифе Vercel cron
+# разрешён не чаще раза в сутки, а напоминание за 15 минут до урока требует
+# запуска каждые несколько минут. Деплой с расписанием */5 на Hobby просто
+# не пройдёт. У GitHub Actions минимум — 5 минут, и это бесплатно.
+#
+# На платном тарифе Vercel можно перейти на его cron: см. docs/TELEGRAM.md.
+#
+# Секреты репозитория (Settings → Secrets and variables → Actions):
+#   REMINDERS_URL — https://ваш-домен.vercel.app/api/reminders
+#   CRON_SECRET   — то же значение, что в переменных окружения Vercel
+
+name: Напоминания об уроках
+
+on:
+  schedule:
+    # Каждые 5 минут. GitHub может задержать запуск под нагрузкой —
+    # поэтому окно выборки в функции шире периода (REMINDER_WINDOW_MINUTES).
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  # Два одновременных запуска не отправят дубль — от этого защищает
+  # reminder_log, — но и толку от них нет.
+  group: reminders
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Дёрнуть эндпоинт рассылки
+        env:
+          REMINDERS_URL: ${{ secrets.REMINDERS_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$REMINDERS_URL" ]; then
+            echo "Не задан секрет REMINDERS_URL"
+            exit 1
+          fi
+
+          response=$(curl -sS --max-time 60 -w '\n%{http_code}' \
+            -X POST "$REMINDERS_URL" \
+            -H "Authorization: Bearer $CRON_SECRET")
+
+          body=$(echo "$response" | sed '$d')
+          code=$(echo "$response" | tail -n1)
+
+          echo "HTTP $code"
+          echo "$body"
+
+          # 5xx роняем, чтобы падение было видно в интерфейсе Actions.
+          if [ "$code" -ge 500 ]; then exit 1; fi

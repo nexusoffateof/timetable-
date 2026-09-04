@@ -187,8 +187,14 @@ const { data, error } = await supabase.from('subjects').select('*')
 
 ## Этап 7. Напоминания по расписанию
 
-Постоянно работающий сервер не нужен. Нужен cron: Vercel Cron (логичнее всего,
-проект уже там), GitHub Actions или Supabase Scheduled Functions.
+**Код написан и покрыт тестами** — `api/reminders.js` плюс запуск через
+`.github/workflows/reminders.yml`. Подробности: `docs/TELEGRAM.md`.
+
+Постоянно работающий сервер не нужен. Нужен cron — и здесь есть подвох:
+**на бесплатном тарифе Vercel cron разрешён не чаще раза в сутки**, а деплой
+с расписанием `*/5` на Hobby не пройдёт вовсе. Поэтому рассылку запускает
+GitHub Actions: минимум 5 минут, бесплатно. На платном тарифе Vercel можно
+вернуться к его cron.
 
 Задача раз в 5 минут дёргает `due_reminders()` под `service_role`, шлёт
 сообщения и пишет отправленные в `reminder_log`.
