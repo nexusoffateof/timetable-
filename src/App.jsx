@@ -549,10 +549,6 @@ export default function App() {
             </button>
           </div>
         )}
-
-        <p className="no-print mt-4 text-center text-[11.5px] text-night-600">
-          ← → неделя · T сегодня · 1 2 3 режимы · Ctrl+Z отменить · правый клик по уроку — меню
-        </p>
       </main>
 
       <LessonDialog

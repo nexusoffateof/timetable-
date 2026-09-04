@@ -1,4 +1,4 @@
-import { formatWeekRange, formatDayMonth, isoWeekNumber } from '../lib/datetime.js'
+import { formatWeekRange, formatDayMonth } from '../lib/datetime.js'
 import Button from './ui/Button.jsx'
 import Icon from './ui/Icon.jsx'
 import Segmented from './ui/Segmented.jsx'
@@ -39,13 +39,8 @@ export default function TopBar({
             <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand/15 text-brand">
               <Icon name="calendar" size={17} />
             </span>
-            <div className="leading-tight">
-              <div className="text-[14px] font-semibold tracking-tight text-night-50">
-                Расписание
-              </div>
-              <div className="num hidden text-[11px] text-night-450 sm:block">
-                {view === 'template' ? 'шаблон недели' : `${isoWeekNumber(anchor)}-я неделя года`}
-              </div>
+            <div className="text-[14px] font-semibold tracking-tight text-night-50">
+              Расписание
             </div>
           </div>
 

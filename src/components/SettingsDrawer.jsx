@@ -187,6 +187,50 @@ function GeneralTab({ state, dispatch }) {
           hint="Уже колонки и ниже строки — вся неделя влезает без прокрутки."
         />
       </div>
+
+      <Shortcuts />
+    </div>
+  )
+}
+
+const SHORTCUTS = [
+  [['←', '→'], 'Предыдущая и следующая неделя. В режиме «День» — соседний день'],
+  [['T'], 'Вернуться на сегодня'],
+  [['1', '2', '3'], 'Неделя, День, Шаблон'],
+  [['Ctrl', 'Z'], 'Отменить последнее действие'],
+  [['Ctrl', '⇧', 'Z'], 'Вернуть отменённое'],
+  [['Ctrl', 'P'], 'Печать'],
+]
+
+/** Раньше это висело строкой под сеткой и читалось как набор слов.
+ *  Место справочной информации — в справке, а не в рабочем экране. */
+function Shortcuts() {
+  return (
+    <div className="rounded-xl border border-night-700/60 bg-night-900/40 p-4">
+      <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-night-400">
+        Горячие клавиши
+      </div>
+      <dl className="space-y-2.5">
+        {SHORTCUTS.map(([keys, description]) => (
+          <div key={description} className="flex items-baseline gap-3">
+            <dt className="flex shrink-0 gap-1">
+              {keys.map((key) => (
+                <kbd
+                  key={key}
+                  className="num rounded-md border border-night-650 bg-night-800 px-1.5 py-0.5 text-[11px] font-medium text-night-200"
+                >
+                  {key}
+                </kbd>
+              ))}
+            </dt>
+            <dd className="text-[12.5px] leading-snug text-night-300">{description}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-3 border-t border-night-700/60 pt-3 text-[12.5px] leading-snug text-night-400">
+        Правый клик по уроку — на телефоне долгое нажатие — открывает меню:
+        копировать, отменить на день, убрать из расписания.
+      </p>
     </div>
   )
 }
