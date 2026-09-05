@@ -23,6 +23,8 @@ import {
 } from '../lib/datetime.js'
 import { exportJSON, importJSON } from '../lib/export.js'
 import { createEmptyState, createSeedState } from '../data/seed.js'
+import { useAuth } from '../state/AuthContext.jsx'
+import { supabase } from '../lib/supabase.js'
 
 const TABS = [
   { id: 'general', label: 'Общее', icon: 'settings' },
@@ -192,7 +194,32 @@ function GeneralTab({ state, dispatch }) {
         />
       </div>
 
+      <Account />
+
       <Shortcuts />
+    </div>
+  )
+}
+
+/** Кто вошёл и как выйти. В локальном режиме секции нет — выходить неоткуда. */
+function Account() {
+  const { cloudEnabled, user, signOut } = useAuth()
+  if (!cloudEnabled || !user) return null
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-night-700/60 bg-night-900/40 p-4">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand/12 text-brand">
+        <Icon name="users" size={17} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-night-400">
+          Аккаунт
+        </div>
+        <div className="truncate text-[13px] text-night-100">{user.email}</div>
+      </div>
+      <Button variant="ghost" size="sm" onClick={signOut}>
+        Выйти
+      </Button>
     </div>
   )
 }
@@ -565,7 +592,7 @@ function RemindersTab({ state, dispatch }) {
             dispatch({ type: 'settings/update', patch: { remindersEnabled: value } })
           }
           label="Напоминания об уроках"
-          hint="Настройки сохранятся сейчас и подхватятся, когда подключится бот."
+          hint="Бот напишет перед началом урока."
         />
       </div>
 
@@ -587,20 +614,7 @@ function RemindersTab({ state, dispatch }) {
         </Select>
       </Field>
 
-      <div className="space-y-3 rounded-xl border border-brand/25 bg-brand/8 p-4">
-        <div className="flex items-center gap-2 text-[13px] font-semibold text-brand">
-          <Icon name="send" size={15} />
-          Telegram пока не подключён
-        </div>
-        <p className="text-[12.5px] leading-relaxed text-night-300">
-          Бот появится на шестом этапе — после базы данных. Пока расписание
-          хранится только в этом браузере, и напоминать некому: чтобы писать вам
-          в Telegram, серверу нужен доступ к расписанию, а не вкладке.
-        </p>
-        <p className="text-[12.5px] leading-relaxed text-night-400">
-          Порядок и подводные камни расписаны в <code className="num text-night-200">docs/ROADMAP.md</code>.
-        </p>
-      </div>
+      <TelegramLink />
 
       <div className="rounded-xl border border-night-700/60 bg-night-900/40 p-4">
         <div className="mb-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-night-400">
@@ -608,10 +622,173 @@ function RemindersTab({ state, dispatch }) {
         </div>
         <div className="num text-[13px] text-night-100">{state.settings.timezone}</div>
         <p className="mt-2 text-[12px] leading-relaxed text-night-450">
-          Сервер живёт по UTC. Момент отправки будет считаться из пары «дата + время
+          Сервер живёт по UTC. Момент отправки считается из пары «дата + время
           урока» именно в этом поясе — иначе напоминания придут со сдвигом.
+          Поменять можно во вкладке «Общее».
         </p>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Привязка Telegram.
+ *
+ * Код выдаёт серверная функция: user_id она берёт из проверенного токена,
+ * а не из тела запроса — иначе любой привязал бы свой Telegram к чужому
+ * расписанию.
+ */
+function TelegramLink() {
+  const { cloudEnabled, user, accessToken } = useAuth()
+  const [link, setLink] = useState(null)
+  const [code, setCode] = useState(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState(null)
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+
+    const check = async () => {
+      if (!cloudEnabled || !user) {
+        setLoaded(true)
+        return
+      }
+      const { data } = await supabase
+        .from('telegram_links')
+        .select('chat_id, username, linked_at')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (!alive) return
+      setLink(data ?? null)
+      setLoaded(true)
+    }
+
+    check()
+    return () => {
+      alive = false
+    }
+  }, [cloudEnabled, user])
+
+  if (!cloudEnabled) {
+    return (
+      <div className="space-y-2 rounded-xl border border-brand/25 bg-brand/8 p-4">
+        <div className="flex items-center gap-2 text-[13px] font-semibold text-brand">
+          <Icon name="send" size={15} />
+          Нужен аккаунт
+        </div>
+        <p className="text-[12.5px] leading-relaxed text-night-300">
+          Чтобы бот понял, кому писать, расписание должно жить в базе, а не
+          в браузере. Подключите Supabase — порядок в{' '}
+          <code className="num text-night-200">docs/TELEGRAM.md</code>.
+        </p>
+      </div>
+    )
+  }
+
+  const requestCode = async () => {
+    setBusy(true)
+    setError(null)
+    try {
+      const response = await fetch('/api/link-code', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        setError(data.message ?? 'Не удалось получить код')
+        return
+      }
+      setCode(data)
+    } catch {
+      setError('Не удалось связаться с сервером')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const unlink = async () => {
+    await supabase.from('telegram_links').delete().eq('user_id', user.id)
+    setLink(null)
+    setCode(null)
+  }
+
+  if (!loaded) {
+    return (
+      <div className="rounded-xl border border-night-700/60 bg-night-900/40 p-4 text-[12.5px] text-night-450">
+        Проверяем привязку…
+      </div>
+    )
+  }
+
+  if (link) {
+    return (
+      <div className="space-y-3 rounded-xl border border-green/25 bg-green/8 p-4">
+        <div className="flex items-center gap-2 text-[13px] font-semibold text-green">
+          <Icon name="check" size={15} />
+          Telegram подключён
+        </div>
+        <p className="text-[12.5px] leading-relaxed text-night-300">
+          {link.username ? `@${link.username}` : `чат ${link.chat_id}`}. Напоминания
+          будут приходить сюда. В боте работают команды /today, /tomorrow, /week.
+        </p>
+        <Button variant="ghost" size="sm" icon="x" onClick={unlink}>
+          Отвязать
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-3 rounded-xl border border-night-700/60 bg-night-900/40 p-4">
+      <div className="flex items-center gap-2 text-[13px] font-semibold text-night-100">
+        <Icon name="send" size={15} className="text-brand" />
+        Подключить Telegram
+      </div>
+
+      {code ? (
+        <div className="space-y-2.5">
+          <p className="text-[12.5px] leading-relaxed text-night-300">
+            Откройте бота и отправьте ему эту команду. Код живёт{' '}
+            {code.ttl_minutes} минут и работает один раз.
+          </p>
+          <div className="num select-all rounded-xl border border-brand/30 bg-night-1000/50 px-3 py-2.5 text-center text-[15px] font-semibold tracking-[0.2em] text-brand">
+            /start {code.code}
+          </div>
+          {code.deep_link && (
+            <a
+              href={code.deep_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2 text-[13px] font-semibold text-night-1000 transition-colors hover:bg-[#8fb2f9]"
+            >
+              <Icon name="telegram" size={15} />
+              Открыть бота и привязать
+            </a>
+          )}
+          <Button variant="ghost" size="sm" onClick={requestCode} disabled={busy}>
+            Получить другой код
+          </Button>
+        </div>
+      ) : (
+        <>
+          <p className="text-[12.5px] leading-relaxed text-night-400">
+            Бот будет присылать напоминания перед уроками и расписание по команде.
+            Привязка одноразовая.
+          </p>
+          <Button variant="primary" size="sm" icon="send" onClick={requestCode} disabled={busy}>
+            {busy ? 'Минуту…' : 'Получить код привязки'}
+          </Button>
+        </>
+      )}
+
+      {error && (
+        <p className="flex items-start gap-2 text-[12px] leading-relaxed text-red">
+          <Icon name="alert" size={13} className="mt-0.5 shrink-0" />
+          {error}
+        </p>
+      )}
     </div>
   )
 }

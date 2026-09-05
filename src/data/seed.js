@@ -58,14 +58,14 @@ const TEMPLATE_SEED = [
 
 export function createSeedState() {
   const bells = BELL_TIMES.map(([start, end], i) => ({
-    id: uid('bell'),
+    id: uid(),
     index: i + 1,
     start,
     end,
   }))
 
   const subjects = SUBJECT_SEED.map(([name, short, color, room]) => ({
-    id: uid('subj'),
+    id: uid(),
     name,
     short,
     color,
@@ -73,7 +73,7 @@ export function createSeedState() {
   }))
 
   const template = TEMPLATE_SEED.map(([weekday, bellIndex, subjectIndex, className]) => ({
-    id: uid('tpl'),
+    id: uid(),
     weekday,
     bellId: bells[bellIndex - 1].id,
     subjectId: subjects[subjectIndex].id,

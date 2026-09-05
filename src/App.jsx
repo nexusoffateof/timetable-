@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSchedule, useToasts } from './state/ScheduleContext.jsx'
+import { useAuth } from './state/AuthContext.jsx'
+import AuthScreen from './components/AuthScreen.jsx'
 import {
   addDaysISO,
   formatDayMonth,
@@ -24,9 +26,12 @@ import Toasts from './components/ui/Toasts.jsx'
 import PrintHeader from './components/PrintHeader.jsx'
 import EmptyState from './components/EmptyState.jsx'
 import ChatWidget from './components/chat/ChatWidget.jsx'
+import Icon from './components/ui/Icon.jsx'
 
 export default function App() {
-  const { state, dispatch, dispatchWithUndo, undo, redo, canUndo } = useSchedule()
+  const auth = useAuth()
+  const { state, dispatch, dispatchWithUndo, undo, redo, canUndo, ready, syncError } =
+    useSchedule()
   const { toast } = useToasts()
   const now = useNow()
 
@@ -456,6 +461,12 @@ export default function App() {
 
   const noBells = !bells.length
 
+  // Порядок проверок важен: пока сессия не выяснена, показывать экран входа
+  // нельзя — вошедший пользователь увидел бы форму логина на долю секунды.
+  if (auth.cloudEnabled && auth.loading) return <Splash text="Проверяем сессию…" />
+  if (auth.cloudEnabled && !auth.user) return <AuthScreen />
+  if (auth.cloudEnabled && !ready) return <Splash text="Загружаем расписание…" />
+
   return (
     <div className="min-h-dvh">
       <TopBar
@@ -475,6 +486,18 @@ export default function App() {
       />
 
       <main className="mx-auto max-w-[1600px] px-3 py-3 sm:px-5 sm:py-4">
+        {syncError && (
+          <div className="no-print mb-3 flex items-start gap-2 rounded-xl border border-red/25 bg-red/8 px-3 py-2.5 text-[12.5px] leading-relaxed text-night-200">
+            <span className="mt-0.5 shrink-0 text-red">
+              <Icon name="alert" size={14} />
+            </span>
+            <span>
+              Изменения не сохранились: {syncError}. Они остались на экране —
+              следующая правка отправит их снова.
+            </span>
+          </div>
+        )}
+
         <PrintHeader
           state={state}
           view={view}
@@ -603,6 +626,17 @@ export default function App() {
       <Toasts />
 
       <ChatWidget />
+    </div>
+  )
+}
+
+function Splash({ text }) {
+  return (
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-3">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-brand">
+        <Icon name="calendar" size={20} />
+      </span>
+      <p className="text-[13px] text-night-400">{text}</p>
     </div>
   )
 }

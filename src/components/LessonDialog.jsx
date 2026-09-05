@@ -79,7 +79,7 @@ function LessonForm({ context, state, dispatch, onClose, onDelete }) {
   const patch = (next) => setForm((prev) => ({ ...prev, ...next }))
 
   const createSubject = ({ name, color }) => {
-    const id = uid('subj')
+    const id = uid()
     dispatch({ type: 'subject/add', subject: { id, name, color, short: '', room: '' } })
     return id
   }

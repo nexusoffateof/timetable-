@@ -41,6 +41,12 @@ export function reducer(state, action) {
     }
   }
 
+  // Загрузка из облака — не действие пользователя: в историю отмен
+  // она попадать не должна, иначе Ctrl+Z вернёт пустое состояние.
+  if (action.type === 'hydrate') {
+    return { doc: action.doc, past: [], future: [] }
+  }
+
   if (action.type === 'replace') {
     return {
       doc: stamp(action.doc),
@@ -71,7 +77,7 @@ function applyToDoc(doc, action) {
 
     /* ── Предметы ───────────────────────────────────────────────────────── */
     case 'subject/add': {
-      const subject = { id: uid('subj'), short: '', room: '', ...action.subject }
+      const subject = { id: uid(), short: '', room: '', ...action.subject }
       return { ...doc, subjects: [...doc.subjects, subject] }
     }
 
@@ -96,7 +102,7 @@ function applyToDoc(doc, action) {
 
     /* ── Звонки ─────────────────────────────────────────────────────────── */
     case 'bell/add': {
-      const bell = { id: uid('bell'), index: doc.bells.length + 1, ...action.bell }
+      const bell = { id: uid(), index: doc.bells.length + 1, ...action.bell }
       return { ...doc, bells: reindex([...doc.bells, bell]) }
     }
 
@@ -131,7 +137,7 @@ function applyToDoc(doc, action) {
         template: [
           ...doc.template,
           {
-            id: uid('tpl'),
+            id: uid(),
             weekday,
             bellId,
             subjectId: null,
@@ -162,7 +168,7 @@ function applyToDoc(doc, action) {
       const next = existing
         ? { ...existing, ...patch }
         : {
-            id: uid('ovr'),
+            id: uid(),
             date,
             bellId,
             status: 'planned',
