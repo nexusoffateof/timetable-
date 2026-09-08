@@ -16,6 +16,16 @@ export default [
     rules: { ...js.configs.recommended.rules },
   },
   {
+    // Скрипты запускаются в Node вручную, DOM тут нет.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: globals.node,
+    },
+    rules: { ...js.configs.recommended.rules },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2024,

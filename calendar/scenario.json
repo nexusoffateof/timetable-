@@ -1,0 +1,79 @@
+{
+  "_": "Сценарий: что должно оказаться в Google Календаре. Правь этот файл, потом /calendar в чате.",
+
+  "calendar": {
+    "calendarId": "primary",
+    "timezone": "Europe/Minsk",
+    "marker": "timetable-sync",
+    "reminderMinutes": 15
+  },
+
+  "period": {
+    "from": "2026-09-01",
+    "to": "2026-12-25"
+  },
+
+  "bells": [
+    { "n": 1, "start": "08:30", "end": "09:15" },
+    { "n": 2, "start": "09:25", "end": "10:10" },
+    { "n": 3, "start": "10:25", "end": "11:10" },
+    { "n": 4, "start": "11:25", "end": "12:10" },
+    { "n": 5, "start": "12:25", "end": "13:10" },
+    { "n": 6, "start": "13:20", "end": "14:05" },
+    { "n": 7, "start": "14:15", "end": "15:00" }
+  ],
+
+  "subjects": {
+    "Алгебра": { "color": "#7aa2f7", "room": "212" },
+    "Геометрия": { "color": "#7dcfff", "room": "212" },
+    "Информатика": { "color": "#9ece6a", "room": "305" },
+    "Вероятность и статистика": { "color": "#73daca", "room": "212" },
+    "Классный час": { "color": "#e0af68", "room": "212" },
+    "Кружок «Алгоритмы»": { "color": "#bb9af7", "room": "305" }
+  },
+
+  "template": {
+    "mon": [
+      { "bell": 1, "subject": "Алгебра", "class": "8А" },
+      { "bell": 2, "subject": "Алгебра", "class": "9В" },
+      { "bell": 3, "subject": "Информатика", "class": "7Б" },
+      { "bell": 4, "subject": "Геометрия", "class": "8А" },
+      { "bell": 6, "subject": "Классный час", "class": "8А" }
+    ],
+    "tue": [
+      { "bell": 2, "subject": "Информатика", "class": "9В" },
+      { "bell": 3, "subject": "Алгебра", "class": "8А" },
+      { "bell": 4, "subject": "Вероятность и статистика", "class": "7Б" },
+      { "bell": 5, "subject": "Геометрия", "class": "9В" }
+    ],
+    "wed": [
+      { "bell": 1, "subject": "Геометрия", "class": "8А" },
+      { "bell": 2, "subject": "Алгебра", "class": "7Б" },
+      { "bell": 3, "subject": "Информатика", "class": "11А" },
+      { "bell": 4, "subject": "Алгебра", "class": "9В" },
+      { "bell": 5, "subject": "Информатика", "class": "7Б" },
+      { "bell": 7, "subject": "Кружок «Алгоритмы»", "class": "9В" }
+    ],
+    "thu": [
+      { "bell": 2, "subject": "Алгебра", "class": "8А" },
+      { "bell": 3, "subject": "Вероятность и статистика", "class": "9В" },
+      { "bell": 4, "subject": "Информатика", "class": "11А" },
+      { "bell": 5, "subject": "Геометрия", "class": "7Б" }
+    ],
+    "fri": [
+      { "bell": 1, "subject": "Информатика", "class": "9В" },
+      { "bell": 2, "subject": "Алгебра", "class": "11А" },
+      { "bell": 3, "subject": "Алгебра", "class": "8А" },
+      { "bell": 4, "subject": "Геометрия", "class": "11А" }
+    ]
+  },
+
+  "skip": [
+    { "from": "2026-11-02", "to": "2026-11-08", "label": "Осенние каникулы" },
+    { "date": "2026-10-14", "label": "Педагогический совет" }
+  ],
+
+  "extra": [
+    { "date": "2026-09-25", "start": "15:00", "end": "16:30", "title": "Родительское собрание 8А", "room": "212" }
+  ]
+}
