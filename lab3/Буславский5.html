@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Умножение</title>
+<style>
+form {
+    width: 185px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Умножение</legend>
+<p>Пример<br>
+<input id="tp1" type="text" size="16"></p>
+<p>Введите ответ<br>
+<input id="tp2" type="text" size="16"></p><hr>
+<p>Результат<br>
+<input id="tp3" type="text" size="16"></p>
+<button type="button" id="b1">Начать</button>
+<button type="button" id="b2">Проверить</button>
+</fieldset>
+</form>
+<script>
+let rez;
+function func1 () {
+let k1 = 1 + Math.floor(Math.random()*9);
+let prim = k1 +" x ";
+let k2 = 1 + Math.floor(Math.random()*9);
+prim = prim + k2 +" =";
+rez = k1*k2;
+tp1.value = prim;
+tp2.value = "";
+tp3.value = "";
+}
+function func2 () {
+let ans;
+let a = +tp2.value;
+if (a == rez) ans = "Правильно!"
+else ans = "Ошибка, ответ " + rez;
+tp3.value = ans;
+}
+b1.addEventListener("click", func1);
+b2.addEventListener("click", func2);
+</script>
+</body>
+</html>

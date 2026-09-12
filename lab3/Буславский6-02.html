@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Делимость на 3</title>
+<style>
+form {
+    width: 201px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Делимость на 3</legend>
+<p>Введите целое число<br>
+<input id="tp1" type="text" size="18"></p><hr>
+<p>Результат<br>
+<input id="tp2" type="text" size="18"></p>
+<button type="button" id="bb">Проверить</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func () {
+let n = +tp1.value;
+let output;
+if (n < 8 || n > 16 || n != Math.trunc(n)) {
+output = "Ошибка ввода";
+}
+else if (n % 3 == 0) {
+output = "Делится на 3";
+}
+else {
+output = "Не делится на 3";
+}
+tp2.value = output;
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

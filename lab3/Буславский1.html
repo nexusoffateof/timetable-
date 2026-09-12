@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Точка и круг</title>
+<style>
+form {
+    width: 177px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Точка и круг</legend>
+<p>Введите:<br>
+радиус круга<br>
+<input id="tp1" type="text" size="15"></p>
+<p>координаты точки<br>
+x <input id="tp2" type="text" size="2">
+y <input id="tp3" type="text" size="2"></p><hr>
+<p>Точка кругу<br>
+<input id="tp4" type="text" size="15"></p>
+<button type="button" id="bb">Решить</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func () {
+let R = +tp1.value;
+let x = +tp2.value;
+let y = +tp3.value;
+let d = Math.sqrt(x**2+y**2);
+tp4.value = (d <= R ? "принадлежит" : "не принадлежит");
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Приветствие</title>
+<style>
+form {
+    width: 185px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Приветствие</legend>
+<p>Введите<br>
+время суток в часах<br>
+<input id="tp1" type="text" size="16"></p><hr>
+<p>Приветствие<br>
+<input id="tp2" type="text" size="16"></p>
+<button type="button" id="bb">Вывести</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func () {
+let time = +tp1.value;
+let output;
+if (time >= 5 && time < 10) {
+output = "Доброе утро!";
+}
+else if (time >= 10 && time < 18) {
+output = "Добрый день!";
+}
+else if (time >= 18 && time < 22) {
+output = "Добрый вечер!";
+}
+else if (time >= 0 && time < 24) {
+output = "Доброй ночи!";
+}
+else {
+output = "Ошибка ввода!";
+}
+tp2.value = output;
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

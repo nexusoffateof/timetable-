@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Значение функции</title>
+<style>
+form {
+    width: 169px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Значение функции</legend>
+<p>Введите аргумент<br>
+<input id="tp1" type="text" size="14"></p><hr>
+<p>Результат<br>
+<input id="tp2" type="text" size="14"></p>
+<button type="button" id="bb">Найти</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func () {
+let x = +tp1.value;
+let w;
+if (x <= 1) {
+w = 2.3*x**2 + Math.log(Math.abs(x)) + 3.7;
+}
+else if (x <= 2) {
+w = Math.sin(x) + 3.3*x**3;
+}
+else {
+w = x**5 + 5.6*x**2 + Math.log(Math.abs((x+2.1)/(x-Math.sqrt(2.3))));
+}
+tp2.value = w.toFixed(3);
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

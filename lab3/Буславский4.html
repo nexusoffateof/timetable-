@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>День недели</title>
+<style>
+form {
+    width: 185px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>День недели</legend>
+<p>Введите<br>
+номер дня недели<br>
+<input id="tp1" type="text" size="16"></p><hr>
+<p>День недели<br>
+<input id="tp2" type="text" size="16"></p>
+<button type="button" id="bb">Вывести</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func () {
+let n = +tp1.value;
+let output;
+switch (n) {
+  case 1:
+    output="Понедельник";
+  break;
+  case 2:
+    output="Вторник";
+  break;
+  case 3:
+    output="Среда";
+  break;
+  case 4:
+    output="Четверг";
+  break;
+  case 5:
+    output="Пятница";
+  break;
+  case 6:
+    output="Суббота";
+  break;
+  case 7:
+    output="Воскресенье";
+  break;
+  default:
+    output="Ошибка ввода";
+}
+tp2.value = output;
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>
