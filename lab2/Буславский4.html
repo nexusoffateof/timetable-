@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Функции пользователя</title>
+<style>
+form {
+    width: 225px;
+}
+p {
+    margin: 3px 0;
+}
+</style>
+<script>
+function func1 () {
+tp.value="Нажата первая кнопка";
+tp.style.color="red";
+}
+function func2 () {
+tp.value="Нажата вторая кнопка";
+tp.style.color="blue";
+}
+function func3 () {
+tp.value="Нажата третья кнопка";
+tp.style.color="green";
+}
+</script>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Форма с кнопками</legend>
+<p><input id="tp" type="text" size="21"></p>
+<p>
+<button type="button" onclick='func1()'>Первая</button>
+<button type="button" onclick='func2()'>Вторая</button>
+<button type="button" onclick='func3()'>Третья</button>
+</p>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+</body>
+</html>

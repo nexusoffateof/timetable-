@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Площадь кольца</title>
+<style>
+form {
+    width: 201px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+<script>
+function func () {
+let R = +tp1.value;
+let r = +tp2.value;
+let s = Math.PI*(R*R-r*r);
+tp3.value = s.toFixed(2);
+}
+</script>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Площадь кольца</legend>
+<p>Внешний радиус кольца<br><input id="tp1" type="text" size="18"></p>
+<p>Радиус отверстия<br><input id="tp2" type="text" size="18"></p><hr>
+<p>Площадь кольца<br><input id="tp3" type="text" size="18"></p>
+<button type="button" onclick="func()">Вычислить</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+</body>
+</html>

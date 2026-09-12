@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Максимальное число</title>
+<style>
+form {
+    width: 182px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+<script>
+function func () {
+let a = +tp1.value;
+let b = +tp2.value;
+let c = +tp3.value;
+let rez = Math.max(a,b,c);
+tp4.value = rez;
+}
+</script>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Максимальное число</legend>
+<p>Введите три числа:</p>
+<p>Число 1 <input id="tp1" type="text" size="8"></p>
+<p>Число 2 <input id="tp2" type="text" size="8"></p>
+<p>Число 3 <input id="tp3" type="text" size="8"></p><hr>
+<p>Максимальное число<br><input id="tp4" type="text" size="15"></p>
+<button type="button" onclick='func()'>Найти</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Значение функции</title>
+<style>
+form {
+    width: 169px;
+}
+p,hr {
+    margin: 3px 0;
+}
+</style>
+<script>
+function func () {
+let x = +tp1.value;
+let rez = 0.2*x**2-x*Math.sqrt(1+Math.abs(Math.log(x)));
+tp2.value = rez.toFixed(2);
+}
+</script>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Значение функции</legend>
+<p>Введите аргумент<br><input id="tp1" type="text" size="14"></p><hr>
+<p>Результат<br><input id="tp2" type="text" size="14"></p>
+<button type="button" onclick="func()">Найти</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+</body>
+</html>
