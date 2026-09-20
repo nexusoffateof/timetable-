@@ -16,6 +16,16 @@ export default [
     rules: { ...js.configs.recommended.rules },
   },
   {
+    // Тесты знают и про браузерные объекты, и про describe/it/expect.
+    files: ['**/*.test.js'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: { ...globals.browser, ...globals.node },
+    },
+    rules: { ...js.configs.recommended.rules },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2024,
