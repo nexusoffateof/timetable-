@@ -8,6 +8,7 @@
 
 const KEY = 'timetable:v2'
 const LEGACY_KEYS = ['timetable:v1', 'teacher-schedule']
+const MIGRATED_KEY = 'timetable:migrated'
 
 export function load() {
   if (typeof localStorage === 'undefined') return null
@@ -59,6 +60,36 @@ export function clear() {
   if (typeof localStorage === 'undefined') return
   localStorage.removeItem(KEY)
   for (const key of LEGACY_KEYS) localStorage.removeItem(key)
+}
+
+/**
+ * Отметка о переезде локального расписания в аккаунт.
+ *
+ * Снимок в localStorage принадлежит браузеру, а не пользователю. Без
+ * отметки он переезжал бы в каждый новый пустой аккаунт подряд: первый
+ * учитель заводит аккаунт и получает своё расписание, второй заводит
+ * аккаунт на том же компьютере — и получает копию чужого.
+ *
+ * Снимок при этом не стираем. Переезд состоит из нескольких запросов,
+ * и если часть из них не дойдёт, единственная целая копия расписания
+ * останется здесь.
+ */
+export function migratedTo() {
+  if (typeof localStorage === 'undefined') return null
+  try {
+    return localStorage.getItem(MIGRATED_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function markMigrated(userId) {
+  if (typeof localStorage === 'undefined') return
+  try {
+    localStorage.setItem(MIGRATED_KEY, userId)
+  } catch {
+    /* приватный режим — переживём */
+  }
 }
 
 /** Приведение старых снимков к текущей форме. */

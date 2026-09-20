@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { prepareLocalForCloud, isEmptyDoc } from './cloud.js'
+import { prepareLocalForCloud, isEmptyDoc, pickFirstDoc } from './cloud.js'
 import { isUuid } from '../id.js'
 
 /**
@@ -83,6 +83,46 @@ describe('prepareLocalForCloud', () => {
 
     expect(cloud.settings).toEqual({ teacherName: 'Марк', timezone: 'Europe/Minsk' })
     expect(cloud.days).toEqual([{ date: '2026-09-21', kind: 'normal', label: '' }])
+  })
+})
+
+describe('pickFirstDoc', () => {
+  const fallback = { bells: [{ id: 'f1' }], subjects: [], template: [], overrides: [], days: [] }
+
+  it('первый аккаунт на этом компьютере забирает локальное расписание', () => {
+    const { doc, fromLocal } = pickFirstDoc({ local: localDoc(), migrated: false, fallback })
+
+    expect(fromLocal).toBe(true)
+    expect(doc.template).toHaveLength(1)
+    expect(doc.subjects[0].name).toBe('Алгебра')
+  })
+
+  it('второй аккаунт на том же компьютере чужого расписания не получает', () => {
+    const { doc, fromLocal } = pickFirstDoc({ local: localDoc(), migrated: true, fallback })
+
+    expect(fromLocal).toBe(false)
+    expect(doc).toBe(fallback)
+  })
+
+  it('без локального расписания берётся заготовка со звонками', () => {
+    const { doc, fromLocal } = pickFirstDoc({ local: null, migrated: false, fallback })
+
+    expect(fromLocal).toBe(false)
+    expect(doc).toBe(fallback)
+  })
+
+  it('пустой локальный снимок переездом не считается', () => {
+    const empty = { bells: [], subjects: [], template: [], overrides: [], days: [] }
+    const { fromLocal } = pickFirstDoc({ local: empty, migrated: false, fallback })
+
+    expect(fromLocal).toBe(false)
+  })
+
+  it('идентификаторы переехавшего расписания пересобраны под uuid', () => {
+    const { doc } = pickFirstDoc({ local: localDoc(), migrated: false, fallback })
+
+    expect(isUuid(doc.bells[0].id)).toBe(true)
+    expect(doc.template[0].bellId).toBe(doc.bells[0].id)
   })
 })
 

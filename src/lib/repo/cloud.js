@@ -161,6 +161,22 @@ export function isEmptyDoc(doc) {
   )
 }
 
+/**
+ * Чем наполнить пустой аккаунт при первом входе.
+ *
+ * Локальное расписание переезжает в аккаунт только один раз за браузер.
+ * Снимок в localStorage привязан к компьютеру, а не к человеку: без этого
+ * условия второй учитель, заводящий аккаунт на том же ноутбуке, получал бы
+ * расписание первого. `migrated` — отметка о состоявшемся переезде,
+ * `fallback` — звонки и предметы без придуманных уроков.
+ */
+export function pickFirstDoc({ local, migrated, fallback }) {
+  if (!migrated && local && !isEmptyDoc(local)) {
+    return { doc: prepareLocalForCloud(local), fromLocal: true }
+  }
+  return { doc: fallback, fromLocal: false }
+}
+
 const COMPACT_KEY = 'timetable:compact'
 
 export function readCompact() {

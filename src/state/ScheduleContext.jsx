@@ -12,13 +12,7 @@ import { initState, reducer } from './scheduleReducer.js'
 import { createSeedState, createEmptyState } from '../data/seed.js'
 import * as storage from '../lib/storage.js'
 import { useAuth } from './AuthContext.jsx'
-import {
-  loadAll,
-  pushDiff,
-  prepareLocalForCloud,
-  isEmptyDoc,
-  writeCompact,
-} from '../lib/repo/cloud.js'
+import { loadAll, pushDiff, pickFirstDoc, isEmptyDoc, writeCompact } from '../lib/repo/cloud.js'
 
 const ScheduleContext = createContext(null)
 const ToastContext = createContext(null)
@@ -79,19 +73,21 @@ export function ScheduleProvider({ children }) {
         let cloud = await loadAll(user.id)
 
         if (isEmptyDoc(cloud)) {
-          const local = storage.load()
+          // Локальное расписание переезжает в аккаунт один раз за браузер.
+          // Иначе второй аккаунт на том же компьютере получил бы копию
+          // расписания первого.
+          const { doc: fresh, fromLocal } = pickFirstDoc({
+            local: storage.load(),
+            migrated: storage.migratedTo() !== null,
+            fallback: createEmptyState(),
+          })
 
-          if (local && !isEmptyDoc(local)) {
-            // Первый вход с уже заполненным локальным расписанием:
-            // переносим его в аккаунт, пересобрав идентификаторы.
-            cloud = { ...prepareLocalForCloud(local), settings: cloud.settings }
-          } else {
-            // Новый аккаунт: звонки и предметы, но без придуманных уроков.
-            const seed = createEmptyState()
-            cloud = { ...seed, settings: cloud.settings }
-          }
-
+          cloud = { ...fresh, settings: cloud.settings }
           await pushDiff(user.id, emptyBaseline(), cloud)
+
+          // Отметку ставим только после успешной записи: если запрос
+          // не дошёл, следующая попытка должна повторить переезд.
+          if (fromLocal) storage.markMigrated(user.id)
         }
 
         if (!alive) return
