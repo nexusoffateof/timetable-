@@ -265,9 +265,18 @@ create policy day_marks_delete_own on public.day_marks
   for delete using ((select auth.uid()) = user_id);
 
 drop policy if exists profiles_select_own on public.profiles;
+drop policy if exists profiles_insert_own on public.profiles;
 drop policy if exists profiles_update_own on public.profiles;
 create policy profiles_select_own on public.profiles
   for select using ((select auth.uid()) = id);
+-- Строку профиля заводит триггер, и обычно вставлять её клиенту незачем.
+-- Но приложение сохраняет настройки через upsert, а PostgREST в upsert
+-- всегда шлёт `insert ... on conflict`: без политики на insert RLS рубит
+-- запрос целиком, даже когда строка на месте и дело кончилось бы update.
+-- `with check` держит вставку в границах своей строки, так что лишнего
+-- она не открывает.
+create policy profiles_insert_own on public.profiles
+  for insert with check ((select auth.uid()) = id);
 create policy profiles_update_own on public.profiles
   for update using ((select auth.uid()) = id) with check ((select auth.uid()) = id);
 
@@ -463,7 +472,7 @@ grant select, insert, update, delete on
   public.day_marks
 to authenticated;
 
-grant select, update on public.profiles to authenticated;
+grant select, insert, update on public.profiles to authenticated;
 grant select, delete on public.telegram_links to authenticated;
 grant select, insert on public.telegram_link_codes to authenticated;
 
