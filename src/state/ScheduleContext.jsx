@@ -20,6 +20,12 @@ const ToastContext = createContext(null)
 export function ScheduleProvider({ children }) {
   const { cloudEnabled, user } = useAuth()
 
+  // Именно идентификатор, а не объект пользователя. Объект сессии
+  // пересоздаётся при каждом обновлении токена — примерно раз в час и при
+  // возврате на вкладку, — и эффект загрузки, завязанный на него, гонял бы
+  // расписание из базы заново, показывая заставку поверх работы.
+  const userId = user?.id ?? null
+
   const [state, dispatch] = useReducer(reducer, undefined, () =>
     initState(cloudEnabled ? createEmptyState() : (storage.load() ?? createSeedState())),
   )
@@ -61,16 +67,19 @@ export function ScheduleProvider({ children }) {
     let alive = true
 
     ;(async () => {
-      if (!user) {
+      if (!userId) {
+        // Вышли из аккаунта: чужое расписание не должно остаться
+        // ни на экране, ни в памяти до входа следующего.
         synced.current = null
         setReady(false)
+        dispatch({ type: 'hydrate', doc: createEmptyState() })
         return
       }
 
       setReady(false)
       setSyncError(null)
       try {
-        let cloud = await loadAll(user.id)
+        let cloud = await loadAll(userId)
 
         if (isEmptyDoc(cloud)) {
           // Локальное расписание переезжает в аккаунт один раз за браузер.
@@ -83,11 +92,11 @@ export function ScheduleProvider({ children }) {
           })
 
           cloud = { ...fresh, settings: cloud.settings }
-          await pushDiff(user.id, emptyBaseline(), cloud)
+          await pushDiff(userId, emptyBaseline(), cloud)
 
           // Отметку ставим только после успешной записи: если запрос
           // не дошёл, следующая попытка должна повторить переезд.
-          if (fromLocal) storage.markMigrated(user.id)
+          if (fromLocal) storage.markMigrated(userId)
         }
 
         if (!alive) return
@@ -105,13 +114,13 @@ export function ScheduleProvider({ children }) {
     return () => {
       alive = false
     }
-  }, [cloudEnabled, user])
+  }, [cloudEnabled, userId])
 
   // Отправка изменений. Сравнение с последним записанным состоянием, а не
   // перехват действий: так «отменить» и восстановление из копии
   // синхронизируются сами, без отдельной обработки.
   useEffect(() => {
-    if (!cloudEnabled || !user || !ready) return
+    if (!cloudEnabled || !userId || !ready) return
     if (!synced.current || synced.current === doc) return
 
     writeCompact(doc.settings.compactCells)
@@ -120,7 +129,7 @@ export function ScheduleProvider({ children }) {
       const baseline = synced.current
       setSyncing(true)
       try {
-        await pushDiff(user.id, baseline, doc)
+        await pushDiff(userId, baseline, doc)
         synced.current = doc
         setSyncError(null)
       } catch (error) {
@@ -133,7 +142,7 @@ export function ScheduleProvider({ children }) {
     }, 400)
 
     return () => clearTimeout(timer)
-  }, [doc, ready, user, cloudEnabled])
+  }, [doc, ready, userId, cloudEnabled])
 
   const dismissToast = useCallback((id) => {
     setToasts((list) => list.filter((t) => t.id !== id))
