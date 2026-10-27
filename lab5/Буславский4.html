@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Сумма элементов</title>
+<style>
+form {
+   width : 169px;
+}
+p,hr {
+   margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Сумма элементов</legend>
+<p>Введите три числа через пробел
+<input id="tp1" type="text" size="14"></p><hr>
+<p>Сумма элементов
+<input id="tp2" type="text" size="14"></p>
+<button type="button" id="bb">Найти</button>
+<button type="reset" id="rr">Сбросить</button>
+</fieldset>
+</form>
+<script>
+let out = document.createElement('div');
+function func() {
+let str = tp1.value;
+let mas = str.split(" ");
+let a = +mas[0];
+let b = +mas[1];
+let c = +mas[2];
+let rez = 0;
+let mas2 = new Array(a);
+for (let i=0; i<a; i++) {
+  mas2[i]= Math.floor(Math.random()*(c-b+1)+b);
+  rez = rez + mas2[i];
+}
+tp2.value = rez;
+mas2.sort((a,b)=>a-b);
+out.innerHTML = ">>> mas = " + mas2;
+document.body.appendChild(out);
+}
+function func2() {
+document.body.removeChild(out);
+}
+bb.addEventListener("click", func);
+rr.addEventListener("click", func2);
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Минимальное число</title>
+<style>
+form {
+   width : 177px;
+}
+p,hr {
+   margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Минимальное число</legend>
+<p>Введите три числа через пробел
+<input id="tp1" type="text" size="14"></p><hr>
+<p>Минимальное число
+<input id="tp2" type="text" size="14"></p>
+<button type="button" id="bb">Найти</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func() {
+let str = tp1.value;
+let mas = str.split(" ");
+let a = +mas[0];
+let b = +mas[1];
+let c = +mas[2];
+let rez = Math.min(a, b, c);
+tp2.value = rez;
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

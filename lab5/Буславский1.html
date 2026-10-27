@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Работа со строками</title>
+<style>
+form {
+   width : 254px;
+}
+p,hr {
+   margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form>
+<fieldset>
+<legend>Работа со строками</legend>
+<p><textarea id="tp1" cols="25" rows="4" placeholder="Введите предложение"></textarea></p>
+<p><textarea id="tp2" cols="25" rows="4" placeholder="Введите предельное число символов"></textarea></p>
+<p><textarea id="tp3" cols="25" rows="4" placeholder="Введите подстроку для поиска"></textarea></p><hr>
+<button type="button" id="bb">Обработать</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func() {
+let str1 = tp1.value;
+tp1.value = str1[0].toLowerCase() + str1.slice(1);
+let n = +tp2.value;
+tp2.value = (str1.length > n) ? str1.slice(0, n) + "…" : str1;
+let str3 = tp3.value;
+tp3.value = (str1.includes(str3)) ? 'Подстрока "' + str3 + '" есть' : 'Подстроки "' + str3 + '" нет';
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>

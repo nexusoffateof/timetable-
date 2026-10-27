@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Работа с массивами</title>
+</head>
+<body>
+<button type="button" id="bb">Обработать данные</button>
+<h3 id="z1"></h3>
+<p id="t1"></p>
+<h3 id="z2"></h3>
+<p id="t2"></p>
+<h3 id="z3"></h3>
+<p id="t3"></p>
+<h3 id="z4"></h3>
+<p id="t4"></p>
+<h3 id="z5"></h3>
+<p id="t5"></p>
+<h3 id="z6"></h3>
+<p id="t6"></p>
+<script>
+function printArray(dd, arr) {
+  let ss="";
+  for (let i = 0; i < arr.length; i++) {
+    ss = ss + arr[i]+"<br>";
+  }
+  dd.innerHTML=ss;
+}
+function call() {
+let mas = ["Высшая алгебра","Аналитическая геометрия","Педагогика и психология","Квантовая физика"];
+z1.innerHTML="Исходный массив";
+printArray(t1, mas);
+z2.innerHTML = "Удаленный элемент";
+t2.innerHTML = mas.shift();
+z3.innerHTML = "Добавлены в начало";
+mas.unshift("Дифференциальные уравнения и ряды","Иностранный язык");
+let mas2 = [mas[0], mas[1]];
+printArray(t3, mas2);
+z4.innerHTML = "Вставлен третьим";
+mas.splice(2,0,"Астрономия");
+t4.innerHTML = mas[2];
+z5.innerHTML = "Результат изменений";
+printArray(t5, mas);
+z6.innerHTML = "Обратный порядок элементов";
+mas.reverse();
+printArray(t6, mas);
+}
+bb.addEventListener("click", call);
+</script>
+</body>
+</html>
