@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Шаблон теста с множественным выбором</title>
+<style>
+form {
+    width: 450px;
+    margin-left: 100px;
+    margin-top: 50px;
+    font-size: 16pt;
+}
+fieldset {
+    background-color: lightgreen;
+}
+p,hr {
+   margin: 3px 0;
+}
+#form2, #form3 {
+    display: none;
+}
+</style>
+</head>
+<body>
+<form id="form1">
+<fieldset>
+<p id="pp1">Шаблон теста с множественным выбором</p><hr>
+<button type="button" id="bb1">Старт</button>
+</fieldset>
+</form>
+<form id="form2">
+<fieldset>
+<p id="pp2"> </p><hr>
+<p><input type="checkbox" name="test" value=1>
+<span id="r1"> </span></p>
+<p><input type="checkbox" name="test" value=2>
+<span id="r2"> </span></p>
+<p><input type="checkbox" name="test" value=3>
+<span id="r3"> </span></p>
+<p><input type="checkbox" name="test" value=4>
+<span id="r4"> </span></p>
+<button type="button" id="bb2">Дальше</button>
+</fieldset>
+</form>
+<form id="form3">
+<fieldset>
+<p id="pp3">Результат тестирования</p><hr>
+<button type="button" id="bb3">Завершить</button>
+</fieldset>
+</form>
+<script>
+let nn = 5;   // число заданий
+let ii = 1;   // текущий номер задания
+let mas = []; // для заданий и вариантов ответов
+let rez = 0;  // число правильных ответов
+mas[1] = ["Задание 1<br>Формулировка задания",
+"Вариант 1 ответа на задание 1",
+"Вариант 2 ответа на задание 1",
+"Вариант 3 ответа на задание 1",
+"Вариант 4 ответа на задание 1",
+"23"
+];
+mas[2] = ["Задание 2<br>Формулировка задания",
+"Вариант 1 ответа на задание 2",
+"Вариант 2 ответа на задание 2",
+"Вариант 3 ответа на задание 2",
+"Вариант 4 ответа на задание 2",
+"1"
+];
+mas[3] = ["Задание 3<br>Формулировка задания",
+"Вариант 1 ответа на задание 3",
+"Вариант 2 ответа на задание 3",
+"Вариант 3 ответа на задание 3",
+"Вариант 4 ответа на задание 3",
+"34"
+];
+mas[4] = ["Задание 4<br>Формулировка задания",
+"Вариант 1 ответа на задание 4",
+"Вариант 2 ответа на задание 4",
+"Вариант 3 ответа на задание 4",
+"Вариант 4 ответа на задание 4",
+"4"
+];
+mas[5] = ["Задание 5<br>Формулировка задания",
+"Вариант 1 ответа на задание 5",
+"Вариант 2 ответа на задание 5",
+"Вариант 3 ответа на задание 5",
+"Вариант 4 ответа на задание 5",
+"12"
+];
+function start() {
+form1.style.display="none";
+form2.style.display="block";
+pp2.innerHTML=mas[ii][0];
+r1.innerHTML=mas[ii][1];
+r2.innerHTML=mas[ii][2];
+r3.innerHTML=mas[ii][3];
+r4.innerHTML=mas[ii][4];
+}
+function call() {
+let kod="";
+for (let elem of form2.test) {
+  if (elem.checked) {
+    kod=kod+elem.value;
+    elem.checked=false;
+  }
+}
+if (mas[ii][5] == kod) rez++;
+ii++;
+if (ii<=nn)  {
+pp2.innerHTML=mas[ii][0];
+r1.innerHTML=mas[ii][1];
+r2.innerHTML=mas[ii][2];
+r3.innerHTML=mas[ii][3];
+r4.innerHTML=mas[ii][4];
+}
+else {
+form2.style.display="none";
+form3.style.display="block";
+pp3.innerHTML="Результат тестирования:<br>выполненных заданий " + rez + " из " + nn;
+ii=1;
+rez=0;
+}
+}
+function over() {
+form3.style.display="none";
+form1.style.display="block";
+}
+bb1.addEventListener("click", start);
+bb2.addEventListener("click", call);
+bb3.addEventListener("click", over);
+</script>
+</body>
+</html>

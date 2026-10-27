@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Код переключателя</title>
+<style>
+form {
+   width : 185px;
+}
+p,hr {
+   margin: 3px 0;
+}
+</style>
+</head>
+<body>
+<form id="form1">
+<fieldset>
+<legend>Код переключателя</legend>
+<p><input type="radio" name="test" value=1>Первый вариант</p>
+<p><input type="radio" name="test" value=2>Второй вариант</p>
+<p><input type="radio" name="test" value=3>Третий вариант</p>
+<p><input type="text" id="tp" size=16></p>
+<button type="button" id="bb">Показать</button>
+<button type="reset">Сбросить</button>
+</fieldset>
+</form>
+<script>
+function func() {
+let kod = form1.test.value;
+tp.value = kod;
+}
+bb.addEventListener("click", func);
+</script>
+</body>
+</html>
