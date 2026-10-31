@@ -31,14 +31,14 @@ p,hr {
 <form id="form2">
 <fieldset>
 <p id="pp2"> </p><hr>
-<p><input type="radio" name="test" value=1>
-<span id="r1"> </span></p>
-<p><input type="radio" name="test" value=2>
-<span id="r2"> </span></p>
-<p><input type="radio" name="test" value=3>
-<span id="r3"> </span></p>
-<p><input type="radio" name="test" value=4>
-<span id="r4"> </span></p>
+<p><input type="radio" name="test" value=1 id="v1">
+<label id="r1" for="v1"> </label></p>
+<p><input type="radio" name="test" value=2 id="v2">
+<label id="r2" for="v2"> </label></p>
+<p><input type="radio" name="test" value=3 id="v3">
+<label id="r3" for="v3"> </label></p>
+<p><input type="radio" name="test" value=4 id="v4">
+<label id="r4" for="v4"> </label></p>
 <button type="button" id="bb2">Дальше</button>
 </fieldset>
 </form>
@@ -98,6 +98,7 @@ r3.innerHTML=mas[ii][3];
 r4.innerHTML=mas[ii][4];
 }
 function call() {
+if (form2.test.value == "") return;
 let kod = +form2.test.value;
 form2.test[kod-1].checked = false;
 if (mas[ii][5] == kod) rez++;
