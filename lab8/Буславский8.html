@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Падающие снежинки</title>
+<style>
+body {
+  background: #2F4777;
+  color: white;
+  overflow: hidden;
+}
+h1 {
+  color: lightgrey;
+  font-size: 150px;
+  font-family: Impact;
+  width: 750px;
+  margin: 300px auto;
+}
+div {
+  position: absolute;
+  z-index: 100;
+}
+</style>
+</head>
+<body>
+<h1>Буславский</h1>
+
+<script>
+let SPEED = 1; // скорость анимации, 2 — в два раза быстрее
+let amount=40; // число снежинок
+let size=50; //размер снежинки в px
+let Y=[]; // координаты Y снежинок
+let X=[]; // координаты X снежинок
+let dY=[]; // сдвиги по Y
+let dX=[]; // сдвиги по X
+let PX=[];  // параметры сдвигов по X
+let sum=[]; // сумма значений параметров PX
+let WinH = innerHeight-60;
+let WinW = innerWidth-70;
+
+for (let i = 0; i < amount; i++) {
+//*** вывод снежинок
+str='<div id="si'+i+'" style="font-size:'+ size + 'px;">*</div>';
+document.write(str);
+//*** расчет начальных положений
+Y[i] = Math.round(Math.random()*WinH);
+X[i] = Math.round(Math.random()*WinW);
+//*** расчет сдвигов
+dY[i]= 0.5 + Math.random()*0.8;
+PX[i]= Math.random()*0.02 + 0.01;
+sum[i]=0;
+}
+
+function move() {
+ for (let i=0; i<amount; i++){
+Y[i] += dY[i]*SPEED;
+sum[i] += PX[i];
+dX[i] = dY[i]*Math.cos(sum[i]);
+X[i] += dX[i]*SPEED;
+if (Y [i] > WinH) {
+  Y[i] = -size;
+  X[i] = Math.round(Math.random()*WinW);
+  dY[i] = 0.5 + Math.random()*0.8;
+  PX[i] = Math.random()*0.02 + 0.01;
+}
+let star = document.getElementById("si" + i);
+star.style.left = X[i] + "px";
+star.style.top = Y[i] + "px";
+ }
+requestAnimationFrame(move);
+}
+onload = move;
+</script>
+</body>
+</html>

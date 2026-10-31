@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Смена картинки</title>
+<style>
+img  {
+   width: 150px;
+   margin: 100px;
+}
+</style>
+</head>
+<body>
+<img src="ris8/ris1.jpg" id="dd">
+
+<script>
+let mas=["ris8/ris1.jpg","ris8/ris2.jpg","ris8/ris3.jpg"];
+let n = 0;
+let len = mas.length;
+
+function func() {
+if (n>=len-1) n=0;
+else n++;
+dd.src = mas[n];
+}
+dd.addEventListener("click", func);
+</script>
+</body>
+</html>

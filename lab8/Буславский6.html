@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Движение под углом</title>
+<style>
+#dd {
+  width: 700px;
+  height: 300px;
+  background-color: green;
+  margin-left: 50px;
+  position: relative;
+}
+#ball {
+  width: 40px;
+  position: absolute;
+  top: 130px;
+}
+</style>
+</head>
+<body>
+<button type="button" id="b1">Пуск</button>
+<button type="button" id="b2">Стоп</button>
+<div id="dd">
+<img id="ball" src="ris8/ball.gif">
+</div>
+
+<script>
+let xx = 0;
+let dx = 5;
+let yy = 130;
+let dy = dx;
+let timerID = null;
+
+function move() {
+xx = xx + dx;
+yy = yy + dy;
+if (xx>=(700 - 40) || xx<=0)  dx=-dx;
+if (yy>=(300 - 40) || yy<=0)  dy=-dy;
+ball.style.top = yy + "px";
+ball.style.left = xx + "px";
+timerID = requestAnimationFrame(move);
+}
+
+function start() {
+if (timerID !== null) return;
+move();
+}
+
+function end() {
+cancelAnimationFrame(timerID);
+timerID = null;
+}
+b1.addEventListener("click", start);
+b2.addEventListener("click", end);
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Текст волной</title>
+<style>
+#dd {
+  margin: 100px;
+  color: green;
+}
+</style>
+</head>
+<body>
+<div id="dd">Буславский Марк</div>
+
+<script>
+let text="";  // надпись в контейнере
+let nn=0;  // переменная для счетчика букв
+let max = 50; // макс. размер шрифта в пт
+
+function move() {
+let str = "";
+let size = 0;
+let mm = 0;
+nn++;
+for (let i = 0; i < text.length; i++) {
+mm = (i-nn)*Math.PI/text.length+0.3;
+size = max*Math.abs(Math.sin(mm));
+str+="<span style='font-size:"+size+"pt'>"+text[i]+"</span>";
+}
+dd.innerHTML = str;  // вывод текста на экран
+if (nn > text.length) nn = 0;  // сброс на начало отсчета
+setTimeout("move()", 100);
+}
+
+function start() {
+text = dd.innerHTML;
+move();
+}
+onload=start;
+</script>
+</body>
+</html>
