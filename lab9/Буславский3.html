@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Изменение цвета</title>
+<style>
+html, body {
+   margin: 0;
+}
+#box {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  background-color: blue;
+}
+</style>
+</head>
+<body>
+<div id="box"></div>
+
+<script>
+document.addEventListener("keydown", func);
+let xx=100;
+let yy=100;
+
+function func() {
+document.title=event.key;
+switch(event.key){
+    case "ArrowLeft":
+        if (xx>0) xx=xx-10;
+        box.style.left=xx+"px";
+     break;
+    case "ArrowUp":
+        if (yy>0) yy=yy-10;
+        box.style.top=yy+"px";
+     break;
+    case "ArrowRight":
+        if (xx< innerWidth -110) xx=xx+10;
+        box.style.left=xx+"px";
+     break;
+    case "ArrowDown":
+        if (yy<innerHeight-110) yy=yy+10;
+        box.style.top=yy+"px";
+     break;
+    case "r":
+        box.style.background="red";
+     break;
+    case "g":
+        box.style.background="green";
+     break;
+    case "b":
+        box.style.background="blue";
+     break;
+}
+}
+</script>
+</body>
+</html>

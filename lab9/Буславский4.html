@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Поведение события</title>
+<style>
+section,article,div {
+    border: 1px solid black;
+}
+section  {
+    width: 150px;
+    height: 140px;
+    background: lightblue;
+    font-family: Arial;
+}
+article  {
+    width: 120px;
+    height: 100px;
+    background: lightgreen;
+}
+div  {
+    width: 90px;
+    height: 60px;
+    background: yellow;
+}
+</style>
+</head>
+<body>
+<section id="s">section
+<article id="a">article
+<div id="d">div</div>
+</article>
+</section>
+<form>
+<input id="tp1" type=text size=16><br>
+<input id="tp2" type=text size=12><br>
+<input id="tp3" type=text size=9><br>
+<button type="reset">Сбросить</button>
+</form>
+
+<script>
+function func() {
+str = event.target.tagName +", "+ event.currentTarget.tagName;
+return str;
+}
+function sec() {
+tp1.value = func();
+}
+function art() {
+event.stopPropagation();
+tp2.value = func();
+}
+function div() {
+tp3.value = func();
+}
+s.addEventListener("click", sec);
+a.addEventListener("click", art);
+d.addEventListener("click", div);
+</script>
+</body>
+</html>

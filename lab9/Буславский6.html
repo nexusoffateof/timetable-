@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Коллекция картинок</title>
+<style>
+#dd  {
+    margin: 100px;
+    position: relative;
+}
+img {
+    position: absolute;
+}
+</style>
+</head>
+<body>
+<div id="dd">
+<img src="ris9/ris1.jpg">
+<img src="ris9/ris2.jpg">
+<img src="ris9/ris3.jpg">
+</div>
+
+<script>
+let mas = [1,2,3];
+
+function func() {
+for (let i=0; i<3; i++)
+[... dd.children][i].style.zIndex=mas[i];
+}
+document.addEventListener("load", func);
+
+function pop() {
+mas.unshift(mas.pop());
+func();
+}
+dd.addEventListener("click", pop);
+</script>
+</body>
+</html>

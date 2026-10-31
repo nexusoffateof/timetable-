@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<META charset="UTF-8">
+<title>Удаление элемента</title>
+<style>
+* {
+  padding: 0;
+  box-sizing: border-box;
+}
+section {
+  width: 300px;
+  margin: 10px auto;
+  background: snow;
+  display: flex;
+  flex-wrap: wrap;
+}
+div {
+  width: 80px;
+  height: 80px;
+  background: green;
+  border: 1px solid black;
+  margin: 3px;
+  cursor: pointer;
+  font-size: 40px;
+  color: white;
+  font-family: Arial Black;
+  text-align: center;
+  align-content: center;
+}
+</style>
+</head>
+<body>
+<section id="sec">
+<div id="b1">1</div>
+<div id="b2">2</div>
+<div id="b3">3</div>
+<div id="b4">4</div>
+<div id="b5">5</div>
+<div id="b6">6</div>
+<div id="b7">7</div>
+<div id="b8">8</div>
+<div id="b9">9</div>
+</section>
+<script>
+sec.addEventListener("click", func);
+
+function func() {
+if (event.target.tagName == "DIV")
+   event.target.remove();
+}
+</script> 
+</body>
+</html>

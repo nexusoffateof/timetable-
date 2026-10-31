@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Свойства события</title>
+<style>
+section,article,div  {
+   border: 1px solid black;
+   width: 200px;
+   height: 100px;
+   background: yellow;
+}
+</style>
+</head>
+<body>
+<section id="sec">section</section>
+<article id="art">article</article>
+<div id="div">div</div>
+<form>
+<input type="text" size=12 id="tp">
+<button type="reset">Сбросить</button>
+</form>
+
+<script>
+sec.addEventListener("click", func);
+art.addEventListener("dblclick", func);
+div.addEventListener("contextmenu", func);
+document.body.addEventListener("keyup", func);
+
+function func() {
+tp.value = event.type +"; "+ event.target.tagName;
+}
+</script>
+</body>
+</html>
